@@ -14,14 +14,23 @@ export default function Home(props) {
   const [location, setLocation] = useState();
   const [scrollPercentage, setScrollPercentage] = useState(0);
 
-  const fetchApiData = async ({ latitude, longitude }) => {
-    const res = await fetch(
-      `http://api.geonames.org/countryCodeJSON?lat=${latitude}&lng=${longitude}&username=${"mygeoapp166"}`
-    );
-    const data = await res.json();
+  const fetchApiData = ({ latitude, longitude }) => {
+    axios
+      .get(
+        `http://api.geonames.org/countryCodeJSON?lat=${latitude}&lng=${longitude}&username=${"mygeoapp166"}`,
+        {
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          mode: "no-cors",
+        }
+      )
+      .then((e) => setCurrCountry(e.data.countryName))
+      .catch((e) => console.log(e.message));
+    // const data = await res.json();
     setDataList([]);
-    console.log("changed");
-    setCurrCountry(data?.countryName);
+    console.log(currCountry);
+    // setCurrCountry(data?.countryName);
     setPageIncrement(page);
   };
 
@@ -91,10 +100,10 @@ export default function Home(props) {
         <meta name="keywords" content="titla, meta, nextjs" />
         <meta name="title" content={"es"} />
         <meta name="discription" content={"data?.description"} />
-        <meta
+        {/* <meta
           http-equiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
-        />
+        /> */}
       </Head>
       <div className="top-0 fixed w-full z-30 bg-white">
         <div className="px-2 sm:px-7 py-3 flex flex-row justify-between items-center">
