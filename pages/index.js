@@ -15,6 +15,9 @@ export default function Home(props) {
   const [scrollPercentage, setScrollPercentage] = useState(0);
 
   const fetchApiData = ({ latitude, longitude }) => {
+
+    setCurrCountry("Netherlands");
+    setPageIncrement(page);
     // axios
     //   .get(
     //     `http://api.geonames.org/countryCodeJSON?lat=${latitude}&lng=${longitude}&username=${"mygeoapp166"}`
@@ -23,8 +26,6 @@ export default function Home(props) {
     //   .catch((e) => console.log(e.message));
     // const data = await res.json();
     setDataList([]);
-    setCurrCountry("Netherlands");
-    setPageIncrement(page);
   };
 
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function Home(props) {
         .catch((e) => console.log(e));
     }, 2000);
     return () => clearInterval(timer);
-  }, [pageIncrement || currCountry]);
+  }, [pageIncrement, currCountry]);
 
   useEffect(() => {
     window.addEventListener("scroll", handelScroll);
