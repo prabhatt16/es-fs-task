@@ -76,7 +76,7 @@ export default function Home(props) {
         .catch((e) => console.log(e));
     }, 2000);
     return () => clearInterval(timer);
-  }, [pageIncrement, currCountry]);
+  }, [pageIncrement || currCountry]);
 
   useEffect(() => {
     window.addEventListener("scroll", handelScroll);
