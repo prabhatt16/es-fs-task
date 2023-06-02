@@ -110,7 +110,7 @@ export default function Home(props) {
                   : "text-gray-900 font-bold"
               }`}
               onClick={() => {
-                alert("Your location is changed to netherland!");
+                // alert("Your location is changed to netherland!");
                 fetchApiData({
                   latitude: "52.132633",
                   longitude: "5.2912659999999505",
