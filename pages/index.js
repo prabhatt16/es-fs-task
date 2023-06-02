@@ -20,7 +20,7 @@ export default function Home(props) {
     );
     const data = await res.json();
     setDataList([]);
-    console.log('changed');
+    console.log("changed");
     setCurrCountry(data?.countryName);
     setPageIncrement(page);
   };
@@ -91,6 +91,10 @@ export default function Home(props) {
         <meta name="keywords" content="titla, meta, nextjs" />
         <meta name="title" content={"es"} />
         <meta name="discription" content={"data?.description"} />
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
       </Head>
       <div className="top-0 fixed w-full z-30 bg-white">
         <div className="px-2 sm:px-7 py-3 flex flex-row justify-between items-center">
