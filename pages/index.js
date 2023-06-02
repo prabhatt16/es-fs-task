@@ -20,6 +20,7 @@ export default function Home(props) {
     );
     const data = await res.json();
     setDataList([]);
+    console.log('changed');
     setCurrCountry(data?.countryName);
     setPageIncrement(page);
   };
