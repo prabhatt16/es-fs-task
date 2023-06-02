@@ -171,7 +171,7 @@ export default function Home(props) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   let data = await axios.get(
     `https://uninterested-suit-tuna.cyclic.app/getdata/${page}`
   );
