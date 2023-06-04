@@ -2,7 +2,6 @@ import axios from "axios";
 import ItemCard from "../components/itemCard.jsx";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-
 export const page = 20;
 export let prevLength = 0,
   currLength = 0;
@@ -10,22 +9,24 @@ export let prevLength = 0,
 export default function Home(props) {
   const [dataList, setDataList] = useState([]);
   const [pageIncrement, setPageIncrement] = useState(page);
-  const [currCountry, setCurrCountry] = useState(null);
+  const [currCountry, setCurrCountry] = useState("");
   const [location, setLocation] = useState();
   const [scrollPercentage, setScrollPercentage] = useState(0);
 
   const fetchApiData = ({ latitude, longitude }) => {
-
-    setCurrCountry("Netherlands");
     setPageIncrement(page);
-    // axios
-    //   .get(
-    //     `http://api.geonames.org/countryCodeJSON?lat=${latitude}&lng=${longitude}&username=${"mygeoapp166"}`
-    //   )
-    //   .then((e) => console.log(e))
-    //   .catch((e) => console.log(e.message));
-    // const data = await res.json();
-    setDataList([]);
+    const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+
+    axios
+      .get(apiUrl)
+      .then((response) => {
+        const address = response.data.address;
+        const countryName = address.country;
+        setCurrCountry(countryName);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function Home(props) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { latitude, longitude } = coords;
         setLocation({ latitude, longitude });
+        fetchApiData({ latitude, longitude });
       });
     }
   }, []);
@@ -62,25 +64,39 @@ export default function Home(props) {
   }, [props]);
 
   useEffect(() => {
-    if (scrollPercentage === 100) {
+    if (scrollPercentage === 70) {
       setPageIncrement(pageIncrement + 20);
     }
   }, [scrollPercentage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      axios
-        .get(
-          `https://uninterested-suit-tuna.cyclic.app/getdata/${pageIncrement}`
-        )
-        .then((e) => {
-          setDataList(e.data.data), (prevLength = currLength);
-          currLength = e?.data?.data?.length;
-        })
-        .catch((e) => console.log(e));
+      if (currCountry != "Netherlands") {
+        axios
+          .get(
+            `https://uninterested-suit-tuna.cyclic.app/getdata/${pageIncrement}`
+          )
+          .then((e) => {
+            prevLength = currLength;
+            setDataList(e.data.data);
+            currLength = e?.data?.data?.length;
+          })
+          .catch((e) => console.log(e));
+      } else {
+        axios
+          .get(
+            `https://uninterested-suit-tuna.cyclic.app/getdata/${pageIncrement}`
+          )
+          .then((e) => {
+            prevLength = currLength;
+            setDataList(e.data.data);
+            currLength = e?.data?.data?.length;
+          })
+          .catch((e) => console.log(e));
+      }
     }, 2000);
     return () => clearInterval(timer);
-  }, [pageIncrement, currCountry]);
+  }, [pageIncrement, scrollPercentage]);
 
   useEffect(() => {
     window.addEventListener("scroll", handelScroll);
@@ -117,15 +133,8 @@ export default function Home(props) {
                   ? "text-gray-500 font-extralight"
                   : "text-gray-900 font-bold"
               }`}
-              onClick={() => {
-                // alert("Your location is changed to netherland!");
-                fetchApiData({
-                  latitude: "52.132633",
-                  longitude: "5.2912659999999505",
-                });
-              }}
             >
-              {"Netherlands"}
+              {currCountry}
             </p>
           </div>
         </div>
@@ -150,7 +159,7 @@ export default function Home(props) {
       </div>
       {currCountry !== "Netherlands" &&
         prevLength !== currLength &&
-        scrollPercentage === 100 && (
+        (scrollPercentage === 70 || scrollPercentage === 100) && (
           <div className="flex flex-row justify-center items-end">
             <h1 className="text-black font-bold text-center py-2">Loading</h1>
             <marquee
@@ -163,18 +172,17 @@ export default function Home(props) {
             </marquee>
           </div>
         )}
-      {currCountry === "Netherlands" &&
-        dataList !== [] &&
-        prevLength !== currLength && (
-          <div
-            onClick={() => {
-              setPageIncrement(pageIncrement + 20);
-            }}
-            className={`bg-[#F75454] text-white text-xs py-2 px-3 rounded-md cursor-pointer w-fit text-center m-auto my-4`}
-          >
-            {"read more".replace(/ /g, "\u00A0")}
-          </div>
-        )}
+
+      {currCountry === "Netherlands" && dataList !== [] && (
+        <div
+          onClick={() => {
+            setPageIncrement(pageIncrement + 20);
+          }}
+          className={`bg-[#F75454] text-white text-xs py-2 px-3 rounded-md cursor-pointer w-fit text-center m-auto my-4`}
+        >
+          {"read more".replace(/ /g, "\u00A0")}
+        </div>
+      )}
     </div>
   );
 }

@@ -16,7 +16,7 @@ function ItemCard({ data }) {
         <div className="flex flex-col justify-start items-start px-3">
           <div className="flex flex-row justify-start items-center flex-wrap">
             <div className="bg-[#3a3a3a] px-2 rounded-sm w-fit mr-2 mb-2">
-              <p className="text-white text-xs">{"item"}</p>
+              <p className="text-white text-xs">{"item"+data?.id}</p>
             </div>
           </div>
           <div className=" cursor-pointer">
