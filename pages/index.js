@@ -70,33 +70,30 @@ export default function Home(props) {
   }, [scrollPercentage]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (currCountry != "Netherlands") {
-        axios
-          .get(
-            `https://uninterested-suit-tuna.cyclic.app/getdata/${pageIncrement}`
-          )
-          .then((e) => {
-            prevLength = currLength;
-            setDataList(e.data.data);
-            currLength = e?.data?.data?.length;
-          })
-          .catch((e) => console.log(e));
-      } else {
-        axios
-          .get(
-            `https://uninterested-suit-tuna.cyclic.app/getdata/${pageIncrement}`
-          )
-          .then((e) => {
-            prevLength = currLength;
-            setDataList(e.data.data);
-            currLength = e?.data?.data?.length;
-          })
-          .catch((e) => console.log(e));
-      }
-    }, 2000);
-    return () => clearInterval(timer);
-  }, [pageIncrement, scrollPercentage]);
+    if (currCountry != "Netherlands" && scrollPercentage >= 70) {
+      axios
+        .get(
+          `https://uninterested-suit-tuna.cyclic.app/getdata/${pageIncrement}`
+        )
+        .then((e) => {
+          prevLength = currLength;
+          setDataList(e.data.data);
+          currLength = e?.data?.data?.length;
+        })
+        .catch((e) => console.log(e));
+    } else {
+      axios
+        .get(
+          `https://uninterested-suit-tuna.cyclic.app/getdata/${pageIncrement}`
+        )
+        .then((e) => {
+          prevLength = currLength;
+          setDataList(e.data.data);
+          currLength = e?.data?.data?.length;
+        })
+        .catch((e) => console.log(e));
+    }
+  }, [pageIncrement]);
 
   useEffect(() => {
     window.addEventListener("scroll", handelScroll);
